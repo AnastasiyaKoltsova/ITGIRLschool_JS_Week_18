@@ -124,23 +124,29 @@ cards.forEach(item => {
     const stars = document.createElement('div');
     stars.classList.add('rating-area');
 
-    const starsValues = [5, 4, 3, 2, 1];
 
-    starsValues.forEach(value => {
-        const starInput = document.createElement('input');
-        starInput.type = 'radio';
-        starInput.id = `star-${value}`;
-        starInput.name = `rating-${item.name}`;
-        starInput.value = value;
+    for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('span');
+        star.classList.add('star');
+        star.setAttribute('data-value', i);
+        star.textContent = '★';
+        stars.appendChild(star);
+    }
 
-        const starLabel = document.createElement('label');
-        starLabel.for = `star-${value}`;
-        starLabel.title = `Оценка «${value}»`; 
-
-        stars.appendChild(starInput);
-        stars.appendChild(starLabel);
+    stars.addEventListener('click', event => {
+        const clickedStar = event.target;
+        if (clickedStar.classList.contains('star')) {
+            const rating = clickedStar.getAttribute('data-value');
+            highlightStars(stars, rating);
+            saveRating(item.name, rating);
+        }
     });
 
+    const savedRating = getRating(item.name);
+    if (savedRating) {
+        highlightStars(stars, savedRating);
+    }
+    
     card.appendChild(title);
     card.appendChild(universe);
     card.appendChild(alterego);
@@ -151,4 +157,30 @@ cards.forEach(item => {
     card.appendChild(stars);
 
     cardsContainer.appendChild(card);
-});  
+}); 
+
+
+function highlightStars(stars, rating) {
+    stars.querySelectorAll('.star').forEach(star => {
+        const isFilled = rating >= star.getAttribute('data-value');
+        star.style.color = isFilled ? 'gold' : 'beige';
+    });
+}
+
+function saveRating(cardName, rating) {
+    localStorage.setItem(`rating_${cardName}`, rating);
+}
+
+function getRating(cardName) {
+    return localStorage.getItem(`rating_${cardName}`);
+}
+
+const clearButton = document.createElement('button');
+clearButton.classList.add('clearButton');
+clearButton.textContent = 'Очистить рейтинг';
+document.body.appendChild(clearButton);
+
+clearButton.addEventListener('click', event => {
+    localStorage.clear();
+    location.reload();
+});
