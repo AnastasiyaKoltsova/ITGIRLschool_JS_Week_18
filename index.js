@@ -116,6 +116,18 @@ cards.forEach(item => {
     const superpowers = document.createElement('p');
     superpowers.textContent = `Суперсилы: ${item.superpowers}`;
 
+    const moreInfoBtn = document.createElement('button');
+    moreInfoBtn.classList.add('infoButton');
+    moreInfoBtn.innerText = 'Подробнее';
+
+    const info = item.info;
+    moreInfoBtn.addEventListener('click', () => {
+        const infoContainer = document.createElement('div');
+        infoContainer.classList.add('infoContainer');
+        infoContainer.innerHTML = `${item.info}`;
+        card.appendChild(infoContainer);
+    });
+
     const img = document.createElement('img');
     img.src = item.url;
     img.src = `./src/assets/images/${item.name}.jpg`;
@@ -153,7 +165,9 @@ cards.forEach(item => {
     card.appendChild(occupation);
     card.appendChild(friends);
     card.appendChild(superpowers);
+    
     card.appendChild(img);
+    card.appendChild(moreInfoBtn);
     card.appendChild(stars);
 
     cardsContainer.appendChild(card);
